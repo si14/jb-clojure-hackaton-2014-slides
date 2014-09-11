@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>JB Clojure hackathon</title>
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<!-- <link rel="stylesheet" href="lib/css/zenburn.css"> -->
+        <link rel="stylesheet" href="plugin/highlight/styles/idea.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+        <style type="text/css">
+          @import url(http://fonts.googleapis.com/css?family=Ubuntu);
+          .reveal { font-family: "Ubuntu", sans-serif; }
+          .reveal .slide-number { font-size: 24px; }
+          .reveal h1,
+          .reveal h2,
+          .reveal h3,
+          .reveal h4,
+          .reveal h5,
+          .reveal h6 {
+              font-family: "Ubuntu", sans-serif;
+              letter-spacing: 0em;
+          }
+          .reveal pre code {
+              font-weight: normal !important;
+          }
+          .hljs-title {
+              font-weight: normal !important;
+          }
+          .reveal pre code.large {
+              font-size: 1.5em;
+              line-height: 1.25em;
+          }
+        </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Clojure Hackathon</h1>
+					<h3>лямбды для всех</h3>
+					<p>
+						<small>Dmitry Groshev <a href="http://twitter.com/lambdadmitry">@lambdadmitry</a></small>
+					</p>
+				</section>
+
+                <section>
+                  <h2>План</h2>
+                  <ul>
+                    <li>общее вступление
+                    <li>инфраструктурное
+                    <li>Clojure в целом
+                    <li>Clojure koans
+                    <li>Обед
+                    <li>…
+                    <li>PROFIT
+                  </ul>
+                </section>
+
+                <section>
+                  <h2>Общее вступление</h2>
+                </section>
+
+                <section>
+                  <ul>
+                    <li>формат: хакатон+воркшоп
+                    <li>первый день: лекции+практика
+                    <li>большая задача
+                    <li>команды
+                  </ul>
+                </section>
+
+                <section>
+                  <h2>Инфраструктурное</h2>
+                </section>
+
+                <section>
+                  <h3>Необходимое</h3>
+                  <ul>
+                    <li>JVM (7+)
+                    <li>leiningen (lein downgrade 2.4.2 ?)
+                    <li>IDE по вкусу (vim, emacs, CursiveClojure)
+                  </ul>
+                </section>
+
+                <section>
+                  <h3>Требуйте в своём редакторе</h3>
+                  <p>Структурное редактирование</p>
+                  <img src="gifs/moveparenright.gif">
+                  <img src="gifs/moveparen.gif">
+                  <p><small>rainbow delimeters!</small></p>
+                </section>
+
+                <section>
+                  <h3>Требуйте в своём редакторе</h3>
+                  <p>Структурное выделение</p>
+                  <img src="gifs/selectmore.gif">
+                </section>
+
+                <section>
+                  <h3>Требуйте в своём редакторе</h3>
+                  <p>Структурное удаление</p>
+                  <img src="gifs/dropdown.gif">
+                  <img src="gifs/dropupbegin.gif">
+                  <img src="gifs/dropupmid.gif">
+                </section>
+
+                <section>
+                  <h2>Clojure в целом</h2>
+                </section>
+
+                <section>
+                  <h3>Немного кода</h3>
+                  <pre><code data-trim class="clojure large">
+(+ 1 2)
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>Базовые конструкции</h3>
+                  <pre><code data-trim class="clojure large">
+:foo
+nil
+2.0
+(list 1 2 3)
+[1 2 3]
+{:a 1, :b 2}
+#{1 2 3}
+				  </code></pre>
+                  <ul>
+                    <li>всё immutable
+                    <li>деревья в основе (log32 n)
+                  </ul>
+                </section>
+
+                <section>
+                  <h3>Больше сахара</h3>
+                  <pre><code data-trim class="clojure large">
+(def pony {:name "Rainbow Dash"
+           :additional {:color "rainbow"
+                        :friends ...}})
+
+(pony :name) ; =&gt; "Rainbow Dash"
+(:name pony) ; =&gt; "Rainbow Dash"
+
+(map :name ponies) ; =&gt; (Name1 Name2 ...)
+
+(get-in pony [:additional :friends]) ; =&gt; ...
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>Первоклассные функции</h3>
+                  <pre><code data-trim class="clojure large">
+(def foobar +)
+(def plus-two (partial + 2))
+(def squared #(* % %))
+(def some-fn (comp (partial + 2) (partial * 2)))
+(def sum1 (+ 1 2 3 4 5))
+(def sum2 (apply + some-list))
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>Лексическое замыкание</h3>
+<pre><code data-trim class="clojure large">
+(defn my-function [x]
+  (let [x 2]
+    (prn x))
+  (prn x))
+
+(my-function 1) ; =&gt; 2 1
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>Циклы, рекурсия</h3>
+                  <pre><code data-trim class="clojure large">
+(map inc (for [q elements
+               p other-elements]
+           (+ q p)))
+
+(loop [x 1]
+  (when (&lt; x 10)
+    (prn x)
+    (recur (inc x))))
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>map/filter/reduce</h3>
+                  <p>нужно рассказывать?</p>
+                </section>
+
+
+                <section>
+                  <h3>seq</h3>
+<pre><code data-trim class="clojure large">
+(list 1 2 3) ; =&gt; (1 2 3)
+(map identity [1 2 3]) ; =&gt; (1 2 3)
+(type (list 1 2 3))
+    ; =&gt; clojure.lang.PersistentList
+(type (map identity [1 2 3]))
+    ; =&gt; clojure.lang.LazySeq
+(take 5 (map #(* % %) (iterate inc 1)))
+    ; =&gt; (1 4 9 16 25)
+(into [] (take 5 (map #(* % %) (iterate inc 1))))
+    ; =&gt; [1 4 9 16 25]
+				  </code></pre>
+                  <ul>
+                    <li>seq — chunked ленивая последовательность
+                    <li>все "list-related" функции работают с seq
+                    <li>for тоже (используйте doseq)
+                    <li>doseq/doall/dorun
+                  </ul>
+                </section>
+
+                <section>
+                  <h3>FizzBuzz</h3>
+                  <pre><code data-trim class="clojure large">
+(defn fizzbuzz [x]
+  (cond (zero? (mod x 15)) "FizzBuzz"
+        (zero? (mod x 5)) "Buzz"
+        (zero? (mod x 3)) "Fizz"
+        :else x))
+
+(doseq [x (range 1 101)]
+  (prn (fizzbuzz x)))
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>Интерлюдия (коаны 1-8)</h3>
+                  <p>ваш лучший друг: <a href="http://clojure.org/cheatsheet">clojure.org/cheatsheet</a></p>
+                </section>
+
+                <section>
+                  <h3>Мультиметоды</h3>
+                  <pre><code data-trim class="clojure large">
+(defmulti foobar (fn [x] (zero? (rem x 2))))
+(defmethod foobar true [a] :foo)
+(defmethod foobar false [a] :bar)
+(defmethod foobar :default [a] :wat)
+
+(foobar 4) ; =&gt; :foo
+(foobar 5) ; =&gt; :bar
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>Destructuring</h3>
+                  <p>младший брат паттерн-матчинга</p>
+                  <pre><code data-trim class="clojure large">
+(let [[x y] [1 2]] (prn x y))
+(fn [[x y & rest :as all]] ...)
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>STM</h3>
+                  <ul>
+                    <li>локи, акторы и транзакции
+                    <li>STM = Software Transactional Memory
+                    <li>координированные изменения: ref+deref+dosync+alter+ref-set
+                    <li>атомарные изменения: atom+swap!+set!
+                    <li>подробнее в коанах
+                  </ul>
+                </section>
+
+                <section>
+                  <h3>Интерлюдия (коаны 9-16, 20-21)</h3>
+                  <p>ваш лучший друг: <a href="http://clojure.org/cheatsheet">clojure.org/cheatsheet</a></p>
+                </section>
+
+                <section>
+                  <h3>defrecord/defprotocol</h3>
+                  <ul>
+                    <li>deftype: объект (нерасширяемый набор полей)
+                    <li>defrecord: почти-map (заданные ключи — поля, дополнительные в map)
+                    <li>defprotocol: расширяемый аналог интерфейсов
+                  </ul>
+                </section>
+
+                <section>
+                  <h3>defrecord/defprotocol</h3>
+                  <pre><code data-trim class="clojure large">
+(defprotocol Concatenatable
+  (cat [this other]))
+
+(defrecord Pony [name]
+  Concatenatable
+  (cat [this other]
+    (.concat (:name this) (:name other))))
+
+(cat (Pony. "Flutter") (Pony. "Shy"))
+    ; =&gt; "FlutterShy"
+				  </code></pre>
+                  <p>NB: Java interop</p>
+                </section>
+
+                <section>
+                  <h3>defrecord/defprotocol</h3>
+                  <pre><code data-trim class="clojure large">
+(extend-type String
+  Concatenatable
+  (cat [this other]
+    (.concat this other)))
+
+(cat "Rainbow" "Dash")
+    ; =&gt; "RainbowDash"
+				  </code></pre>
+                </section>
+
+                <section>
+                  <h3>Почти финал (коаны 18-19)</h3>
+                  <p>ваш лучший друг: <a href="http://clojure.org/cheatsheet">clojure.org/cheatsheet</a></p>
+                </section>
+
+				<section>
+					<h3>Спасибо за внимание!</h3>
+                    <p>Слайды: <a href="http://si14.github.io/jb-clojure-hackaton-2014-slides">si14.github.io/jb-clojure-hackaton-2014-slides</a></p>
+                    <p>Твиттер: <a href="https://twitter.com/lambdadmitry">@lambdadmitry</a></p>
+                    <p>Почта: <a href="mailto:lambdadmitry@gmail.com">lambdadmitry@gmail.com</a></p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+
+                slideNumber: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
